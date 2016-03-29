@@ -36,27 +36,63 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    
-    ofxPanel gui;
 
-    ofParameterGroup enable;
-    ofParameterGroup guiGroup;
+    //
+    void exit();
+    void ofRectGradient(int px, int py, int w, int h,const ofColor& start, const ofColor& end, ofGradientMode mode);
+    void drawGradient(int _x, int _y, int _w, int _h, float _posHWave , ofTexture& _texture, vector<float>vec);
+    void setupGui();
+    void setShaderVals();
+    void setGraficVals();
     
-    ofParameter<bool>masks;
-    vector<ofParameter<float>>masksFader;
+    //shader stuff
+    ofxAutoReloadedShader perlinShader;
+    ofxAutoReloadedShader cloudShader;
+    ofxAutoReloadedShader flamesShader;
+    ofxAutoReloadedShader glowShader;
+    ofxAutoReloadedShader dropShader;
+    
+    float counterFlames;
+    float counterPerlin;
+    float counterCloud;
+    float counterGlow;
+    float counterDrops;
+    
+    //grafiks
+    vector<Spiral> spirals;
+    vector<Rain>rainDrops;
+    vector<Blink> blinks;
+    vector<Larve> larves;
+    vector<Boubble> boubbles;
+    vector<DancingLine> dancingLines;
+    float counterDLines;
+    
+    //interactive wave
+    WaveParticleSystem waveSystem;
+    
+    //interactive Sea
+    Sea seaSystem;
+    float pWaveEdge = 0;
+    int waveCounter = 0;
+    
+    ofFbo render;
+    ofFbo meshFbo;
+    ofxSyphonServer syphon;
     ofxOscParameterSync syncOSC;
     
-    ofParameterGroup backgroud_Grad;
-    ofParameter<ofColor>Fx1ColorTopTop;
-    ofParameter<ofColor>Fx1ColorBotTop;
-    ofParameter<ofColor>Fx1ColorTopBot;
-    ofParameter<ofColor>Fx1ColorBotBot;
+    //gui vars
+    ofxPanel gui;
+    ofParameterGroup enable;
+    ofParameter<bool>masks;
+    vector<ofParameter<float>>masksFader;
+    
+    ofParameterGroup guiGroup;
     
     ofParameterGroup mainControl;
-    
     ofParameter<float> edge;
     ofParameter<float> waveEdge;
     ofParameter<bool>flames;
+    ofParameter<bool>pixelPreview;
     ofParameter<bool>  perlin;
     ofParameter<bool>  glow;
     ofParameter<bool>  cloud;
@@ -74,70 +110,48 @@ public:
     ofParameter<float>  intensity;
     ofParameter<float>  disturbWave;
     ofParameter<bool>  bwSwitch;
-    
     ofParameter<ofColor>  grafiks;
     ofParameter<ofColor>  textures;
-
-    //Wave theWave;
+    ofParameter<float> inLeft;
+    ofParameter<float> inRight;
+    ofParameter<float> noiseAmt;
     
+    //background gradient colors
+    ofParameterGroup backgroud_Grad;
+    ofParameter<ofColor>Fx1ColorTopTop;
+    ofParameter<ofColor>Fx1ColorBotTop;
+    ofParameter<ofColor>Fx1ColorTopBot;
+    ofParameter<ofColor>Fx1ColorBotBot;
     
     ofParameterGroup waveControl;
     ofParameter<float> dLinesSpeed;
     ofParameter<float> dLinesSync;
     ofParameter<ofColor> colorDLines;
-    vector<DancingLine> dancingLines;
-    float counterDLines;
-    ofFbo fboDancingLines;
-    
+    //boubles
     ofParameter<float> boubblesIntensity;
     ofParameter<float> boubblesVelMin;
     ofParameter<float> boubblesVelMax;
     ofParameter<ofColor> colorBoubbles;
-    vector<Boubble> boubbles;
-    ofFbo bubblesFbo;
-    
+    //blink
+    ofParameter<float> blinkTempo;
+    ofParameter<float> blinkIntensity;
+    ofParameter<bool> hard_soft;
+    ofParameter<ofColor> colorBlink;
+    //spiral
     ofParameter<bool> spiralIntensity;
     ofParameter<float> spiralAngle;
     ofParameter<int> spiralAmount;
     ofParameter<ofColor> colorSpiral;
-    
+    //larve
     ofParameter<float> larveIntensity;
     ofParameter<float> larveVelMin;
     ofParameter<float> larveVelMax;
     ofParameter<float> larveMaxLength;
     ofParameter<float> larveMinLength;
     ofParameter<ofColor> colorLarve;
-    // BlinkendeLygter
-    vector<Larve> larves;
-    ofFbo larveFbo;
-    
-    //ofParameter<float> waveRange;
-    //ofParameter<int> waveDivisions;
 
-    
-    ofFbo render;
-    ofxSyphonServer syphon;
-    void ofRectGradient(int px, int py, int w, int h,const ofColor& start, const ofColor& end, ofGradientMode mode);
-    void drawGradient(int _x, int _y, int _w, int _h, float _posHWave , ofTexture& _texture, vector<float>vec);
-    
-    void setupGui();
-    
-    void setShaderVals();
-    void setGraficVals();
-    void shaderNotWarped();
-    
-    ofFbo meshFbo;
-    ofFbo secondMesh;
-    //shader stuff
-    ofxAutoReloadedShader perlinShader;
-    ofxAutoReloadedShader cloudShader;
-    ofxAutoReloadedShader flamesShader;
-    ofxAutoReloadedShader glowShader;
-    ofxAutoReloadedShader dropShader;
-    
+    //shader GUI
     ofParameterGroup paramGeneral;
-
-//    
     ofParameterGroup paramFlames;
     ofParameter<bool> enableFlames;
     ofParameter<float> flamesTempo;
@@ -151,12 +165,6 @@ public:
     ofParameter<float> zoomPerlin;
     ofParameter<bool> horizontalPerlin;
     
-//    ofParameter<float> FirstDivision;
-//    ofParameter<float> rotationSpeed;
-//    ofParameter<float> fallingSpeed;
-//    ofParameter<float> rotCenterX;
-//    ofParameter<float> rotCenterY;
-    
     ofParameterGroup paramCloud;
     ofParameter<float> tempoCloud;
     ofParameter<float> zoomCloud;
@@ -165,7 +173,6 @@ public:
     ofParameter<bool>  enableFBM;
     ofParameter<bool>  enableRMF;
     ofParameter<ofColor> cloudColor;
-//    ofParameter<bool>  enableCircle;
     
     ofParameterGroup paramDrops;
     ofParameter<float> tempoDrops;
@@ -176,42 +183,10 @@ public:
     ofParameter<bool>  inverseDrops;
     ofParameter<ofColor> colorDrops;
     
-    
     ofParameterGroup paramGlow;
     ofParameter<float> tempoGlow;
     ofParameter<float> glowDensity;
     ofParameter<float> u_amount;
     ofParameter<bool> glowHorisontal;
     ofParameter<ofColor> glowColor;
-    
-    
-    float counterFlames;
-    float counterPerlin;
-    float counterCloud;
-    float counterGlow;
-    float counterDrops;
-
-    
-    // Blinkende Lyger
-    // GUI / Controlpanel
-    ofParameter<float> blinkTempo;
-    ofParameter<float> blinkIntensity;
-    ofParameter<bool> hard_soft;
-    ofParameter<ofColor> colorBlink;
-    // BlinkendeLygter
-    vector<Blink> blinks;
-    
-    
-    ofParameter<float> inLeft;
-    ofParameter<float> inRight;
-    ofParameter<float> noiseAmt;
-    
-    ofParameter<bool>pixelPreview;
-    
-    vector<Spiral> spirals;
-    vector<Rain>rainDrops;
-    WaveParticleSystem waveSystem;
-    Sea seaSystem;
-    float pWaveEdge = 0;
-    int waveCounter = 0;
 };

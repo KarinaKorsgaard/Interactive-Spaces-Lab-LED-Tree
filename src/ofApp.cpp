@@ -5,6 +5,8 @@ void ofApp::setup(){
     // Gui setup
     ofSetFrameRate(60);
     setupGui();
+    syncOSC.setup((ofParameterGroup&)gui.getParameter(),OSCRECEIVEPORT,"localhost",OSCSENDPORT);
+    syncOSC.update();
     
     waveSystem.setup(RES_W);
     waveSystem.updateResponse(ATTACK, DAMPING);
@@ -20,15 +22,7 @@ void ofApp::setup(){
         
         dancingLines.push_back(newLine);
     }
-//    //wave
-//    theWave = *new Wave;
-//    theWave.col1 = Fx1ColorTopTop;
-//    theWave.col2 = Fx1ColorTopBot;
-//    theWave.col3 = Fx1ColorBotTop;
-//    theWave.col4 = Fx1ColorBotTop;
-//    theWave.posH = waveEdge;
-    
-   
+
     //shaders
     cloudShader.load("shaders/cloud");
     flamesShader.load("shaders/flames");
@@ -50,13 +44,6 @@ void ofApp::setup(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     meshFbo.end();
     
-    secondMesh.allocate(RES_W,RES_H);
-    secondMesh.begin();
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    secondMesh.end();
-    
-    
     syphon.setName("LED_TREE");
  
 }
@@ -64,42 +51,16 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
+    syncOSC.update();
+    
+    //syncs intensity ---
     u_amount = intensity;
     flameSize = 1-intensity;
     blinkIntensity = intensity;
     boubblesIntensity = intensity;
     waveSizeDrops = intensity*3;
     
-    // draw the Waves
-    float noiseLeft = noiseAmt*(ofNoise(ofGetElapsedTimef()*4)-0.5);
-    float noiseRight = noiseAmt*(ofNoise(ofGetElapsedTimef()*4+300.)-0.5);
-    float noiseRight_ramp = noiseAmt*(ofNoise(ofGetElapsedTimef()*4+600.)-0.5);
-    float noiseLeft_ramp = noiseAmt*(ofNoise(ofGetElapsedTimef()*4+900.)-0.5);
-    waveSystem.update(inLeft+noiseLeft, inRight+noiseRight);
-    int max = 0 ;
-    float number = 0 ;
-    for(int i = 0 ; i<masksFader.size();i++){
-        if (masksFader[i]>max) {
-            max = masksFader[i];
-            number = float(i)/masksFader.size();
-        }
-    }
-    if(pWaveEdge == disturbWave){
-        waveCounter++;
-    }
-    if(pWaveEdge != disturbWave){
-        pWaveEdge = disturbWave;
-        waveCounter = 0;
-    }
-    if(waveCounter<1000){
-        seaSystem.update(inLeft+noiseLeft, inRight+noiseRight,disturbWave);
-    }
-    else{
-        seaSystem.update(0,0,disturbWave);
-    }
-    
-    syncOSC.update();
-    
+    //syncs colors of tex and grafics
     if(syncColors){
         colorBlink = grafiks;
         colorBoubbles = grafiks;
@@ -125,14 +86,45 @@ void ofApp::update(){
     
     //update warped image (textures and dancing lines)
     setShaderVals();
-
+    
+    // wave update
+    float noiseLeft = noiseAmt*(ofNoise(ofGetElapsedTimef()*4)-0.5);
+    float noiseRight = noiseAmt*(ofNoise(ofGetElapsedTimef()*4+300.)-0.5);
+    float noiseRight_ramp = noiseAmt*(ofNoise(ofGetElapsedTimef()*4+600.)-0.5);
+    float noiseLeft_ramp = noiseAmt*(ofNoise(ofGetElapsedTimef()*4+900.)-0.5);
+    
+    //wave system
+    waveSystem.update(inLeft+noiseLeft, inRight+noiseRight);
+    
+    //interactive sea update
+    int max = 0 ;
+    float number = 0 ;
+    for(int i = 0 ; i<masksFader.size();i++){
+        if (masksFader[i]>max) {
+            max = masksFader[i];
+            number = float(i)/masksFader.size();
+        }
+    }
+    if(pWaveEdge == disturbWave){ //thres to stop waves if no-one is there
+        waveCounter++;
+    }
+    if(pWaveEdge != disturbWave){
+        pWaveEdge = disturbWave;
+        waveCounter = 0;
+    }
+    if(waveCounter<1000){
+        seaSystem.update(inLeft+noiseLeft, inRight+noiseRight,disturbWave);
+    }
+    else{
+        seaSystem.update(0,0,disturbWave);
+    }
+    
     //mainRender
     render.begin();
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ofBackground(0);
     
-
     //draw textures in masks
     if(interActiveMasks){
         if(cloud||flames||glow||drops||perlin||b_lines){
@@ -175,7 +167,6 @@ void ofApp::update(){
             Larve.draw();
         }
     }
-    
     for(auto Spiral:spirals){
         Spiral.draw();
     }
@@ -184,7 +175,7 @@ void ofApp::update(){
             Blink.draw();
         }
     }
-//    for(auto Rain:rainDrops){
+//    for(auto Rain:rainDrops){ //unused code
 //        Rain.draw();
 //    }
     
@@ -396,8 +387,6 @@ void ofApp::setShaderVals(){
         ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR);
         ofRectGradient(0, RES_H/2, RES_W, RES_H/2, Fx1ColorBotTop, Fx1ColorBotBot, OF_GRADIENT_LINEAR);
     }
-   // ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR);
-   // ofRectGradient(0, RES_H/2, RES_W, RES_H/2, Fx1ColorBotTop, Fx1ColorBotBot, OF_GRADIENT_LINEAR);
     
     if(glow){
         glowShader.begin();
@@ -467,7 +456,7 @@ void ofApp::setShaderVals(){
         }
     }
     
-    if(perlin){
+    if(perlin){ // perlin is only black, makes masks on the other textures
         perlinShader.begin();
         perlinShader.setUniform2f("u_resolution",RES_W, RES_H/2);
         perlinShader.setUniform1f("u_time", counterPerlin);
@@ -475,11 +464,6 @@ void ofApp::setShaderVals(){
         perlinShader.setUniform1f("u_date", 1.);
         perlinShader.setUniform1f("u_linesY", horizontalPerlin);
         perlinShader.setUniform1f("u_linesX", false);
-//        cloudShader.setUniform1i("bwSwitch", bwSwitch);
-//        cloudShader.setUniform1i("bgTransparent", true);
-//        cloudShader.setUniform1i("enableFBM", enableFBM);
-//        cloudShader.setUniform1i("enableRMF", enableRMF);
-//        cloudShader.setUniform3f("u_color", float(cloudColor->r)/255,float(cloudColor->g)/255,float(cloudColor->b)/255);
         ofSetColor(255,255,255);
         ofFill();
         ofDrawRectangle(0, RES_H/2, RES_W, RES_H/2);
@@ -488,28 +472,11 @@ void ofApp::setShaderVals(){
     if(!gradientColor){
         ofRectGradient(0, RES_H/2-40, RES_W, 100,ofColor(0), ofColor(0,0), OF_GRADIENT_LINEAR);
     }
-//    if(gradientColor){
-//        ofSetColor(255);
-//        ofSetLineWidth(2);
-//        ofDrawLine(0, RES_H/2, RES_W, RES_H/2);
-//    }
 
     meshFbo.end();
 }
 
 void ofApp::setGraficVals(){
-    //udpate wave
-//    if(wave){
-//        theWave.update();
-//        theWave.col1 = Fx1ColorTopTop;
-//        theWave.col2 = Fx1ColorTopBot;
-//        theWave.col3 = Fx1ColorBotTop;
-//        theWave.col4 = Fx1ColorBotBot;
-//        theWave.posH = waveEdge;
-//        theWave.range = waveRange;
-//        theWave.divisions = waveDivisions;
-//    }
-    
     
     // Blinkedne blinks
     for(int i = 0; i < 10 ; i++){
@@ -532,30 +499,7 @@ void ofApp::setGraficVals(){
             ++it;
     }
     
-//    // RainDrops
-//    for(int i = 0; i < 10 ; i++){
-//        if(ofRandom(100000)/100000 < blinkIntensity/2){
-//            Rain rainDrop;
-//            rainDrop.pos = ofVec2f(((int)ofRandom(RES_W)),0);
-//            rainDrop.vel = ofVec2f(0,0);
-//            rainDrop.acc = ofRandom(0.1,0.15);
-//            rainDrop.height = waveEdge;
-//            rainDrop.color = grafiks;
-//            rainDrops.push_back(rainDrop);
-//        }
-//    }
-//    
-//    for (vector<Rain>::iterator it=rainDrops.begin(); it!=rainDrops.end();)    {
-//        it->update();
-//        if(it->isDead())
-//            it = rainDrops.erase(it);
-//        else
-//            ++it;
-//    }
-    
-    
     // Larves
-    
     if(ofRandom(100000)/100000 < larveIntensity){
         Larve larve;
         larve.larveColor = colorLarve;
@@ -576,7 +520,6 @@ void ofApp::setGraficVals(){
     
     
     // Boubbles
-    
     if(ofRandom(100000)/100000 < boubblesIntensity){
         Boubble boubble;
         boubble.boubbleColor = colorBoubbles;
@@ -592,7 +535,6 @@ void ofApp::setGraficVals(){
         else
             ++it;
     }
-    
     
     // spirals
     if(b_spiral){
@@ -626,7 +568,6 @@ void ofApp::setGraficVals(){
         }
     }
     
-    
     if (!b_larve) {
         larveIntensity = 0;
     }
@@ -648,60 +589,11 @@ void ofApp::setGraficVals(){
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-    
+void ofApp::exit(){
+    gui.saveToFile("settings.h");
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-    
-}
-
 
 void ofApp::setupGui(){
     guiGroup.setName("guiGroup");
@@ -718,38 +610,32 @@ void ofApp::setupGui(){
     n.push_back("maskIX");
     n.push_back("maskX");
     
-    
-    
     enable.setName("enable");
     masksFader.resize(numTreePoles);
     for(int i =0; i<numTreePoles ; i++){
-        //   masksFader[i] = *new ofParameter<float>;
         masksFader[i].set(n[i],0,0,1);
         enable.add(masksFader[i]);
     }
 
     
     backgroud_Grad.setName("backgroud_Grad");
-    backgroud_Grad.add(Fx1ColorTopTop.set("Backgroud_TopTop", ofColor(0,0,0,0), ofColor(0,0),ofColor(255)));
-    
-    backgroud_Grad.add(Fx1ColorTopBot.set("Backgroud_TopBot", ofColor(0,255,255,255), ofColor(0,0),ofColor(255)));
-    
-    backgroud_Grad.add(Fx1ColorBotTop.set("Backgroud_BotTop", ofColor(0,30,0,50), ofColor(0,0),ofColor(255)));
-    
-    backgroud_Grad.add(Fx1ColorBotBot.set("Backgroud_BotBot", ofColor(0,0,0,0), ofColor(0,0),ofColor(255)));
+    backgroud_Grad.add(Fx1ColorTopTop.set("Backgroud_TopTop", ofColor(0,0), ofColor(0,0),ofColor(255)));
+    backgroud_Grad.add(Fx1ColorTopBot.set("Backgroud_TopBot", ofColor(0,0), ofColor(0,0),ofColor(255)));
+    backgroud_Grad.add(Fx1ColorBotTop.set("Backgroud_BotTop", ofColor(0,0), ofColor(0,0),ofColor(255)));
+    backgroud_Grad.add(Fx1ColorBotBot.set("Backgroud_BotBot", ofColor(0,0), ofColor(0,0),ofColor(255)));
     
     mainControl.setName("mainControl");
     mainControl.add(pixelPreview.set("pixPreview", false));
-    mainControl.add(flames.set("flames", false));
-    // mainControl.add(perlin.set("perlin", false));
-    mainControl.add(cloud.set("cloud", false));
     mainControl.add(gradientColor.set("gradientColor", false));
     mainControl.add(glow.set("glow", false));
+    mainControl.add(flames.set("flames", false));
     mainControl.add(drops.set("drops", false));
-    mainControl.add(b_larve.set("larves", false));
-    mainControl.add(perlin.set("perlin", false));
-    mainControl.add(b_blink.set("b_blink", false));
+    mainControl.add(cloud.set("cloud", false));
     mainControl.add(b_lines.set("dancingLines", false));
+    mainControl.add(perlin.set("perlin", false));
+    
+    mainControl.add(b_larve.set("larves", false));
+    mainControl.add(b_blink.set("b_blink", false));
     mainControl.add(b_bubbles.set("bubbles", false));
     mainControl.add(b_spiral.set("Spiral", false));
     
@@ -761,25 +647,20 @@ void ofApp::setupGui(){
     mainControl.add(intensity.set("intensity", 0.5, 0., 1));
     mainControl.add(edge.set("edge", 0.5, 0., 1));
     mainControl.add(disturbWave.set("disturbWave", 0.5, 0., 1));
-    mainControl.add(waveEdge.set("waveEdge", 0.5, 0., 1));
     mainControl.add(syncColors.set("syncColors", false));
     mainControl.add(grafiks.set("grafiks", ofColor(255,255), ofColor(0,0), ofColor(255,255)));
     mainControl.add(textures.set("textures", ofColor(255,255), ofColor(0,0), ofColor(255,255)));
-    // Control
-    waveControl.setName("BubblesLines");
-   // waveControl.add(waveDivisions.set("waveDivisions", 0.0, 2.0, 10.0));
-   // waveControl.add(waveRange.set("waveRange", 0.0, 0.0, 50.0));
     
+    // Bubbles and Lines
+    waveControl.setName("BubblesLines");
     ofParameterGroup waveControlWave;
     waveControlWave.setName("waveControlWave");
     waveControlWave.add(inLeft.set("inLeft", 0., -1., 1.));
     waveControlWave.add(inRight.set("inRight", 0., -1., 1.));
     waveControlWave.add(noiseAmt.set("noiseAmt", 0.15, 0., 1));
-    
-    
+
     ofParameterGroup waveControlSpiral;
     waveControlSpiral.setName("waveControlSpiral");
-    
     waveControlSpiral.add(spiralIntensity.set("spiralIntensity", false));
     waveControlSpiral.add(spiralAngle.set("spiralAngle", 0.0, 2.0, 30.0));
     waveControlSpiral.add(spiralAmount.set("spiralAmount", 2, 1,7));
@@ -787,16 +668,13 @@ void ofApp::setupGui(){
     
     ofParameterGroup waveControlBub;
     waveControlBub.setName("waveControlBub");
-    
     waveControlBub.add(boubblesIntensity.set("boubblesIntensity", 0.0, 0.0, 1.0));
     waveControlBub.add(boubblesVelMin.set("boubblesVelMin", 0.5, 0.0, 5.0));
     waveControlBub.add(boubblesVelMax.set("boubblesVelMax", 2., 0.0, 5.0));
     waveControlBub.add(colorBoubbles.set("colorBoubbles", ofColor(255,255), ofColor(0,0), ofColor(255,255)));
     
-    // Control
     ofParameterGroup waveControlLarve;
     waveControlLarve.setName("waveControlLarve");
-    
     waveControlLarve.add(larveIntensity.set("larveIntensity", 1.0, 0.0, 1.0));
     waveControlLarve.add(larveVelMin.set("larveVelMin", 0.5, 0.1, 5.0));
     waveControlLarve.add(larveVelMax.set("larveVelMax", 2., 0.1, 5.0));
@@ -806,16 +684,12 @@ void ofApp::setupGui(){
     
     ofParameterGroup waveControlLines;
     waveControlLines.setName("waveControlLines");
-
-    // Dancing Lines
-    // Control
     waveControlLines.add(dLinesSpeed.set("dLinesSpeed", .2, 0.0, 1));
     waveControlLines.add(dLinesSync.set("dLinesSync", .9, 0.5, 1));
     waveControlLines.add(colorDLines.set("colorDLines", ofColor(0,255), ofColor(0,0), ofColor(255,255)));
     
     ofParameterGroup waveControlBlink;
     waveControlBlink.setName("waveControlBlink");
-    
     waveControlBlink.add(blinkIntensity.set("blinkIntensity", 0.0, 0.0, 1.0));
     waveControlBlink.add(blinkTempo.set("blinkTempo", 0.02, 0.0001, 0.1));
     waveControlBlink.add(hard_soft.set("hard/soft", true));
@@ -828,17 +702,13 @@ void ofApp::setupGui(){
     waveControl.add(waveControlLarve);
     waveControl.add(waveControlLines);
 
-    //texture
+    //textures
     paramGeneral.setName("paramGeneral");
-    
     paramFlames.setName("paramFlames");
     paramFlames.add(flamesTempo.set("flamesTempo", 1, 0., 1));
     paramFlames.add(flameAmountY.set("flame_height", 1, 0., 1));
     paramFlames.add(flameColor.set("flameColor", ofColor(0,154,255,255), ofColor(0,0),ofColor(255)));
-    
-    paramGeneral.add(paramFlames);
-    
-    // param for Cloud
+
     paramCloud.setName("paramCloud");
     paramCloud.add(tempoCloud.set("tempoCloud", 0.1, 0., 1));
     paramCloud.add(zoomCloud.set("zoomCloud", 0.1, 0., 1));
@@ -847,7 +717,6 @@ void ofApp::setupGui(){
     paramCloud.add(enableFBM.set("enableFBM", true));
     paramCloud.add(enableRMF.set("enableRMF", true));
     paramCloud.add(cloudColor.set("cloudColor", ofColor(255,255), ofColor(0,0), ofColor(255,255)));
-    paramGeneral.add(paramCloud);
     
     paramGlow.setName("paramGlow");
     paramGlow.add(tempoGlow.set("tempoGlow", 0.1, 0., 1));
@@ -855,7 +724,6 @@ void ofApp::setupGui(){
     paramGlow.add(u_amount.set("u_amount",0.5,0.,1.));
     paramGlow.add(glowHorisontal.set("glowHorisontal",false));
     paramGlow.add(glowColor.set("glowColor", ofColor(0,154,255,255), ofColor(0,0),ofColor(255)));
-    paramGeneral.add(paramGlow);
     
     paramDrops.setName("paramDrops");
     paramDrops.add(tempoDrops.set("tempoDrops", 0.1, 0., 1));
@@ -865,12 +733,16 @@ void ofApp::setupGui(){
     paramDrops.add(waveSizeDrops.set("waveSizeDrops", 0.1, 0., 3));
     paramDrops.add(colorDrops.set("colorDrops", ofColor(0,154,255,255), ofColor(0,0),ofColor(255)));
     paramDrops.add(inverseDrops.set("inverseDrops", false));
-    paramGeneral.add(paramDrops);
     
     paramPerlin.setName("paramPerlin");
     paramPerlin.add(tempoPerlin.set("tempoPerlin", 0.1, 0., 1));
     paramPerlin.add(zoomPerlin.set("zoomPerlin", 0.1, 0., 1));
     paramPerlin.add(horizontalPerlin.set("horizontalPerlin", false));
+    
+    paramGeneral.add(paramFlames);
+    paramGeneral.add(paramCloud);
+    paramGeneral.add(paramGlow);
+    paramGeneral.add(paramDrops);
     paramGeneral.add(paramPerlin);
     
     guiGroup.add(enable);
@@ -883,7 +755,5 @@ void ofApp::setupGui(){
     
     gui.loadFromFile("settings.xml");
     gui.minimizeAll();
-    syncOSC.setup((ofParameterGroup&)gui.getParameter(),OSCRECEIVEPORT,"localhost",OSCSENDPORT);
-    syncOSC.update();
 
 }

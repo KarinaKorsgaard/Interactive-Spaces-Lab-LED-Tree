@@ -44,11 +44,9 @@ public:
         ofSetLineWidth(0.);
         
         ofDrawRectangle(location.x,location.y, 1,1);
-        //ofLine(location.x,location.y, location.x+5, location.y);
-        //ofCircle(location.x,location.y,8);
+
     }
-    
-    // Is the particle still useful?
+
     bool isDead() {
         if (lifespan < 0.0) {
             return true;
