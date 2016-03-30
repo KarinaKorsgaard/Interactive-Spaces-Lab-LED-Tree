@@ -48,10 +48,10 @@ public:
             ofSetColor(ofColor(boubbleColor.r,boubbleColor.g,boubbleColor.b,alpha));
             alpha-=inc;
             if(up){
-                ofDrawRectangle(location.x,location.y+i, 1,1);
+                ofDrawRectangle(location.x,location.y+i*2, 2,2);
             }
             if(!up){
-                ofDrawRectangle(location.x,location.y-i, 1,1);
+                ofDrawRectangle(location.x,location.y-i*2, 2,2);
             }
         }
    

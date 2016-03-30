@@ -23,7 +23,7 @@ public:
     Pixel(ofVec2f _pos, ofColor _col) {
         pos = _pos;
         col = _col;
-        acc = ofRandom(0.001,0.002);
+        acc = ofRandom(0.001,0.02);
         vel = ofVec2f(0, 0);
         
     }
@@ -39,7 +39,7 @@ public:
     void draw() {
         ofSetLineWidth(0.);
         ofSetColor(col.r,col.g,col.b,alpha);
-        ofDrawRectangle(pos,10,1);
+        ofDrawRectangle(pos,10,2);
     }
     
     // Is the particle still useful?
@@ -71,9 +71,9 @@ public:
     
     // Method to update location
     void update() {
-        edge +=0.3;
+        edge +=0.1;
         for (vector<Pixel>::iterator it=pix.begin(); it!=pix.end();)    {
-            if(it->pos.y<edge && ofRandom(1)>0.8){ //make them float from top
+            if(it->pos.y<edge && ofRandom(1)>0.9){ //make them float from top
                 it->moving = true;
                 
             }
@@ -81,7 +81,7 @@ public:
                 it->update();
             }
             if(edge > orgEdge + 10 && !it->moving){
-                it->alpha =  sin(PI/2+(edge-orgEdge)*it->acc) *50  + 205;
+                it->alpha =  sin(PI/2+(edge-orgEdge)*it->acc) *100  + 155;
             }else{
                 it->alpha = 255;
             }

@@ -51,5 +51,5 @@ void main() {
     f = sin(f*20.+u_time);
     
     
-    gl_FragColor = vec4(f*-1.,f.x*0.2);
+    gl_FragColor = vec4(f*-1.,f.x);
 }

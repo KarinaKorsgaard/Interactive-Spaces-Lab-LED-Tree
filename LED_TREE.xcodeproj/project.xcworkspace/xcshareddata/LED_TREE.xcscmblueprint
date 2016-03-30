@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "51DF9AB476C3FAF099F37691A2DC341D88E1A058",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "95F70890EFD46183734FEDFE52CF53391DE6937E" : 0,
+    "51DF9AB476C3FAF099F37691A2DC341D88E1A058" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C96CF29B-C667-48DD-A0D0-0746C6C8B513",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "95F70890EFD46183734FEDFE52CF53391DE6937E" : "..\/..\/addons\/ofxPostProcessing",
+    "51DF9AB476C3FAF099F37691A2DC341D88E1A058" : "LED_TREE\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "LED_TREE",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "LED_TREE.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/KarinaKorsgaard\/LED_TREE",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "51DF9AB476C3FAF099F37691A2DC341D88E1A058"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/neilmendoza\/ofxPostProcessing.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95F70890EFD46183734FEDFE52CF53391DE6937E"
+    }
+  ]
+}
