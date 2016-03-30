@@ -18,6 +18,7 @@
 #include "waveSystem.h"
 #include "sea.h"
 #include "transPix.h"
+#include "LampVis.h"
 
 class ofApp : public ofBaseApp{
     
@@ -82,8 +83,10 @@ public:
     
     ofFbo render;
     ofFbo meshFbo;
-    ofFbo lamps; 
+    ofFbo lamps;
+    LampVis lampVis;
     ofxSyphonServer syphon;
+    ofxSyphonServer syphonLamp;
     ofxOscParameterSync syncOSC;
 
     

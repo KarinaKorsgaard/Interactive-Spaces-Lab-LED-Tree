@@ -23,6 +23,8 @@ void ofApp::setup(){
         
         dancingLines.push_back(newLine);
     }
+    
+    lampVis = *new LampVis;
 
     //shaders
     cloudShader.load("shaders/cloud");
@@ -45,7 +47,14 @@ void ofApp::setup(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     meshFbo.end();
     
+    lamps.allocate(LAMP_W,LAMP_H);
+    lamps.begin();
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    lamps.end();
+    
     syphon.setName("LED_TREE");
+    syphonLamp.setName("LED_TREE_LAMPS");
  
 }
 
@@ -143,11 +152,17 @@ void ofApp::update(){
         seaSystem.update(0,0,disturbWave);
     }
     
+    lampVis.update(tempoCloud/10);
+    
+    lamps.begin();
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ofBackground(0);
+    lampVis.draw();
+    lamps.end();
+    
     //mainRender
     render.begin();
-    
-   
-        
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ofBackground(0);
@@ -254,6 +269,7 @@ void ofApp::update(){
     
     ofFill();
     syphon.publishTexture(&render.getTexture());
+    syphonLamp.publishTexture(&lamps.getTexture());
 }
 
 //--------------------------------------------------------------

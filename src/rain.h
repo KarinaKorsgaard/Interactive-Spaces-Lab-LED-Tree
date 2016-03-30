@@ -63,7 +63,7 @@ public:
             for(int i = 0; i<10;i++){
                 ofSetColor(ofColor(color.r,color.g,color.b,alpha));
                 alpha-=inc;
-                ofDrawRectangle(pos.x,pos.y-i, 10,1);
+                ofDrawRectangle(pos.x,pos.y-i, RES_W/numTreePoles,1);
             }
         }
         if(updatePoint){
@@ -74,7 +74,7 @@ public:
             
             float p = point * RES_H + edge*RES_H; //1-( pos.y/(edge*RES_H) );
             
-            ofDrawRectangle(pos.x,p, 10,1);
+            ofDrawRectangle(pos.x,p, RES_W/numTreePoles,1);
             
         }
     }

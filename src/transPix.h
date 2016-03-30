@@ -39,7 +39,7 @@ public:
     void draw() {
         ofSetLineWidth(0.);
         ofSetColor(col.r,col.g,col.b,alpha);
-        ofDrawRectangle(pos,10,2);
+        ofDrawRectangle(pos,RES_W/numTreePoles,2);
     }
     
     // Is the particle still useful?
