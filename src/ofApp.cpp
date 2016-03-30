@@ -137,6 +137,7 @@ void ofApp::update(){
             max = masksFader[i];
             number = float(i)/masksFader.size();
         }
+        
     }
     if(pWaveEdge == disturbWave){ //thres to stop waves if no-one is there
         waveCounter++;
