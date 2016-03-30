@@ -15,7 +15,7 @@ uniform bool u_linesY;//1,3000]
 
 // quadrilin: 252 cubic:269   + 21 for noise transform
 
-#define h(n) fract(sin(n+vec2(0,157))*57.)
+#define h(n) fract(sin(n+vec2(0,157))*7.)
 #define N m=fract(u*s); l=dot(u*s-m,vec2(1,157));s+=s; m*=m*(3.-m-m); r= mix(h(l),h(++l),m.x); f+= mix(r.x,r.y,m.y)/s;
 #define PI 3.14159265359
 
@@ -32,7 +32,7 @@ void main() {
     
     //rotate because ...
     u -= vec2(0.5);
-    u = rotate2d( u_time/100. ) * u;
+    u = rotate2d( u_time/10000. ) * u;
     u += vec2(.5);
     
     if(u_linesY){
@@ -40,9 +40,9 @@ void main() {
     }
 
     //vec2 u = vec2(0.0);
-    vec3 f = vec3(cos(u_time/100000.));
+    vec3 f = vec3(cos(u_time/10000000.));
     
-    u = (u_zoom*20.)*u/u_resolution.y-vec2(7,8);
+    u = (u_zoom*200.)*u/u_resolution.y-vec2(7,8);
     vec2 m,r; float l,s=.5;
     
     N N N N
@@ -51,5 +51,5 @@ void main() {
     f = sin(f*20.+u_time);
     
     
-    gl_FragColor = vec4(f*-1.,f.x);
+    gl_FragColor = vec4(f*-1.,f.x*0.2);
 }

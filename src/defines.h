@@ -10,6 +10,9 @@
 #define RES_W 100
 #define RES_H 800
 
+#define LAMP_W 200
+#define LAMP_H 220
+
 // OSC
 #define OSCRECEIVEPORT 7000
 #define OSCSENDPORT 7001

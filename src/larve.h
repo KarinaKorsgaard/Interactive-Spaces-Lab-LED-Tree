@@ -57,7 +57,7 @@ public:
                 alpha*=1.1;
             }
             
-            ofSetColor(larveColor,alpha);
+            ofSetColor(larveColor.r,larveColor.g,larveColor.b,alpha);
             ofDrawRectangle(x, a+i, 2, 3);
             ofDrawRectangle(x, a+(pixels-i), 2, 3);
         }

@@ -2,11 +2,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    // Gui setup
     ofSetFrameRate(60);
+    
     setupGui();
     syncOSC.setup((ofParameterGroup&)gui.getParameter(),OSCRECEIVEPORT,"localhost",OSCSENDPORT);
     syncOSC.update();
+    
     
     waveSystem.setup(RES_W);
     waveSystem.updateResponse(ATTACK, DAMPING);
@@ -54,12 +55,12 @@ void ofApp::update(){
     syncOSC.update();
     
     //syncs intensity ---
-    u_amount = intensity;
-    flameSize = 1-intensity;
-    blinkIntensity = intensity;
-    boubblesIntensity = intensity;
-    waveSizeDrops = intensity*3;
-    
+//    u_amount = intensity;
+//    flameSize = 1-intensity;
+//    blinkIntensity = intensity;
+//    boubblesIntensity = intensity;
+//    waveSizeDrops = intensity*3;
+    drawnEdge = drawnEdge*0.9 + edge*0.1;
     //syncs colors of tex and grafics
     if(syncColors){
         colorBlink = grafiks;
@@ -72,6 +73,29 @@ void ofApp::update(){
         cloudColor = textures;
         flameColor = textures;
         glowColor = textures;
+    }
+    
+    //rainDrops:
+    for(int i = 0; i<masksFader.size();i++){
+        if(masksFader[i]==1){
+            masksFader[i]=0;
+            DataRain rain;
+            rain.num = i;
+            rain.edge = 1-edge;
+            rain.pos = ofVec2f(i*(RES_W/numTreePoles),0);
+            rainDrops.push_back(rain);
+            
+        }
+    }
+    for (vector<DataRain>::iterator it=rainDrops.begin(); it!=rainDrops.end();)    {
+        it->update(1-edge);
+        if(it->isDead()){
+            it = rainDrops.erase(it);
+            edge+=(float(1-edge)/800);
+        }
+        else{
+            ++it;
+        }
     }
     
     //shaders tempo
@@ -121,38 +145,45 @@ void ofApp::update(){
     
     //mainRender
     render.begin();
+    
+   
+        
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ofBackground(0);
-    
-    //draw textures in masks
-    if(interActiveMasks){
-        if(cloud||flames||glow||drops||perlin||b_lines){
-            vector<float>vec;
-            for(int i = 0 ; i<masksFader.size();i++){
-                vec.push_back(masksFader[i]);
+    if(!transistionBegun){
+        //draw textures in masks
+        if(interActiveMasks){
+            if(cloud||flames||glow||drops||perlin||b_lines){
+                vector<float>vec;
+                vec.resize(masksFader.size(), 0);
+                for(int i = 0 ; i<rainDrops.size();i++){
+                    if(rainDrops[i].updatePoint){
+                        vec[rainDrops[i].num] = rainDrops[i].point;
+                    }
+                }
+                drawGradient(0, 0, RES_W, RES_H, drawnEdge, meshFbo.getTexture(), vec);
             }
-            drawGradient(0, 0, RES_W, RES_H, edge, meshFbo.getTexture(), vec);
         }
-    }
-    if(interActiveWave){
-        if(cloud||flames||glow||drops||perlin||b_lines){
-            drawGradient(0, 0, RES_W, RES_H, edge, meshFbo.getTexture(),waveSystem.waveParticlesPos);
-        }
-    }
-    if(interActiveSea){
-        if(cloud||flames||glow||drops||perlin||b_lines){
-            drawGradient(0, 0, RES_W, RES_H, edge, meshFbo.getTexture(),seaSystem.dropsPos);
-        }
-    }
-    //draw textures unwarped (stretched)
-    if(!interActiveMasks&&!interActiveWave&&!interActiveSea){
-        if(cloud||flames||glow||drops||perlin){
-            vector<float>vec;
-            for(int i = 0 ; i<masksFader.size();i++){
-                vec.push_back(0);
+        if(interActiveWave){
+            if(cloud||flames||glow||drops||perlin||b_lines){
+                drawGradient(0, 0, RES_W, RES_H, drawnEdge, meshFbo.getTexture(),waveSystem.waveParticlesPos);
             }
-            drawGradient(0, 0, RES_W, RES_H, edge, meshFbo.getTexture(), vec);
+        }
+        if(interActiveSea){
+            if(cloud||flames||glow||drops||perlin||b_lines){
+                drawGradient(0, 0, RES_W, RES_H, drawnEdge, meshFbo.getTexture(),seaSystem.dropsPos);
+            }
+        }
+        //draw textures unwarped (stretched)
+        if(!interActiveMasks&&!interActiveWave&&!interActiveSea){
+            if(cloud||flames||glow||drops||perlin){
+                vector<float>vec;
+                for(int i = 0 ; i<masksFader.size();i++){
+                    vec.push_back(0);
+                }
+                drawGradient(0, 0, RES_W, RES_H, drawnEdge, meshFbo.getTexture(), vec);
+            }
         }
     }
     
@@ -175,16 +206,51 @@ void ofApp::update(){
             Blink.draw();
         }
     }
-//    for(auto Rain:rainDrops){ //unused code
-//        Rain.draw();
-//    }
+    for(auto Rain:rainDrops){ //unused code
+        Rain.draw();
+    }
     
 //    if(rainDrops.size()>2){
 //    for(int i = 0; i<rainDrops.size()-1;i++){
 //        ofDrawLine(rainDrops[i].pos,rainDrops[i+1].pos);
 //    }}
+    if(transistionBegun && transPix.size()>0){
+        transPix[0].draw();
+    }
     
     render.end();
+    
+    if(transition && !transistionBegun){
+        transistionBegun = true;
+        transition = false;
+        ofPixels pix;
+        vector<ofVec2f>pos;
+        vector<ofColor>col;
+        render.getTexture().readToPixels(pix);
+        for(int x = 0; x<RES_W; x+=RES_W/numTreePoles){
+            for(int y = RES_H-1; y > (1-edge)*RES_H; y--){
+                
+                col.push_back(pix.getColor(x+2, y));
+                pos.push_back(ofVec2f(x, y));
+            }
+        }
+        TransPix tp(pos,col);
+        tp.edge = (1-edge)*RES_H;
+        tp.orgEdge = (1-edge)*RES_H;
+        transPix.push_back(tp);
+    }
+    for (vector<TransPix>::iterator it=transPix.begin(); it!=transPix.end();)    {
+        it->update();
+        if(it->pix.size()<=0){
+            it = transPix.erase(it);
+            transistionBegun = false;
+            edge = 0.01;
+            drawnEdge = 0;
+        }
+        else{
+            ++it;
+        }
+    }
     
     ofFill();
     syphon.publishTexture(&render.getTexture());
@@ -233,13 +299,14 @@ void ofApp::draw(){
         ofSetColor(255);
         ofNoFill();
         //ofDrawRectangle(0, 0, RES_W, RES_H);
-        ofDrawBitmapString("pixel preview", 0, -10);
+        ofDrawBitmapString("pixel preview " + ofToString(boubbles.size()), 0, -10);
         if(waveCounter>1000){
             ofSetColor(255, 0, 0);
             ofDrawRectangle(0, 0, 20, 20);
         }
         ofPopMatrix();
     }
+
     gui.draw();
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
     
@@ -390,7 +457,7 @@ void ofApp::setShaderVals(){
     
     if(glow){
         glowShader.begin();
-        glowShader.setUniform2f("iResolution", RES_W, RES_H/2);
+        glowShader.setUniform2f("iResolution", RES_W, RES_H*3);
         glowShader.setUniform1f("iGlobalTime", counterGlow);
         glowShader.setUniform1f("u_density", glowDensity);
         glowShader.setUniform1f("u_amount", u_amount);
@@ -439,7 +506,7 @@ void ofApp::setShaderVals(){
         cloudShader.setUniform1f("u_zoom", zoomCloud);
         cloudShader.setUniform1f("u_balance", balance);
         cloudShader.setUniform1f("u_contrast", contrast+1.0);
-        cloudShader.setUniform1i("bwSwitch", bwSwitch);
+        cloudShader.setUniform1i("bwSwitch", false);
         cloudShader.setUniform1i("bgTransparent", true);
         cloudShader.setUniform1i("enableFBM", enableFBM);
         cloudShader.setUniform1i("enableRMF", enableRMF);
@@ -469,9 +536,9 @@ void ofApp::setShaderVals(){
         ofDrawRectangle(0, RES_H/2, RES_W, RES_H/2);
         perlinShader.end();
     }
-    if(!gradientColor){
-        ofRectGradient(0, RES_H/2-40, RES_W, 100,ofColor(0), ofColor(0,0), OF_GRADIENT_LINEAR);
-    }
+//    if(!gradientColor){
+//        ofRectGradient(0, RES_H/2-40, RES_W, 100,ofColor(0), ofColor(0,0), OF_GRADIENT_LINEAR);
+//    }
 
     meshFbo.end();
 }
@@ -483,7 +550,8 @@ void ofApp::setGraficVals(){
         if(ofRandom(100000)/100000 < blinkIntensity){
             Blink blink;
             blink.blinkColor = colorBlink;
-            blink.location = ofVec2f(((int)ofRandom(RES_W)),(int)ofRandom(RES_H));
+            int resH = ofRandom(RES_H*(1-edge));
+            blink.location = ofVec2f(((int)ofRandom(RES_W)),(int)ofRandom(resH));
             blink.tempo = blinkTempo;
             blink.hard_soft = hard_soft;
             
@@ -523,8 +591,16 @@ void ofApp::setGraficVals(){
     if(ofRandom(100000)/100000 < boubblesIntensity){
         Boubble boubble;
         boubble.boubbleColor = colorBoubbles;
-        boubble.location = ofVec2f(((int)ofRandom(RES_W)),RES_H);
-        boubble.velocity = ofVec2f(0., - ofRandom(boubblesVelMin   , boubblesVelMax));
+        boubble.trace = bub_trace;
+        if(up_down){
+            boubble.location = ofVec2f(((int)ofRandom(RES_W)),RES_H);
+            boubble.velocity = ofVec2f(0., - ofRandom(boubblesVelMin   , boubblesVelMax));
+        }
+        if(!up_down){
+            boubble.location = ofVec2f(((int)ofRandom(RES_W)),0);
+            boubble.velocity = ofVec2f(0., ofRandom(boubblesVelMin   , boubblesVelMax));
+        }
+        boubble.up = up_down;
         boubbles.push_back(boubble);
     }
     for (vector<Boubble>::iterator it=boubbles.begin(); it!=boubbles.end();)    {
@@ -568,29 +644,29 @@ void ofApp::setGraficVals(){
         }
     }
     
-    if (!b_larve) {
-        larveIntensity = 0;
-    }
-    if (b_larve && larveIntensity==0) {
-        larveIntensity = 0.2;
-    }
-    if (!b_blink) {
-        blinkIntensity = 0.0;
-    }
-    if (b_blink && blinkIntensity== 0) {
-        blinkIntensity = 0.2;
-    }
-    if (!b_bubbles) {
-        boubblesIntensity = 0;
-    }
-    if (b_bubbles && boubblesIntensity==0) {
-        boubblesIntensity = 0.4;
-    }
+//    if (!b_larve) {
+//        larveIntensity = 0;
+//    }
+//    if (b_larve && larveIntensity==0) {
+//        larveIntensity = 0.2;
+//    }
+//    if (!b_blink) {
+//        blinkIntensity = 0.0;
+//    }
+//    if (b_blink && blinkIntensity== 0) {
+//        blinkIntensity = 0.2;
+//    }
+//    if (!b_bubbles) {
+//        boubblesIntensity = 0;
+//    }
+//    if (b_bubbles && boubblesIntensity==0) {
+//        boubblesIntensity = 0.4;
+//    }
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-    gui.saveToFile("settings.h");
+    gui.saveToFile("settings.xml");
 }
 
 //--------------------------------------------------------------
@@ -643,7 +719,7 @@ void ofApp::setupGui(){
     mainControl.add(interActiveWave.set("interActiveWave", false));
     mainControl.add(interActiveSea.set("interActiveSea", false));
     
-    mainControl.add(bwSwitch.set("bwSwitch", false));
+    mainControl.add(transition.set("transition", false));
     mainControl.add(intensity.set("intensity", 0.5, 0., 1));
     mainControl.add(edge.set("edge", 0.5, 0., 1));
     mainControl.add(disturbWave.set("disturbWave", 0.5, 0., 1));
@@ -671,6 +747,8 @@ void ofApp::setupGui(){
     waveControlBub.add(boubblesIntensity.set("boubblesIntensity", 0.0, 0.0, 1.0));
     waveControlBub.add(boubblesVelMin.set("boubblesVelMin", 0.5, 0.0, 5.0));
     waveControlBub.add(boubblesVelMax.set("boubblesVelMax", 2., 0.0, 5.0));
+    waveControlBub.add(bub_trace.set("bub_trace", 1,1,10));
+    waveControlBub.add(up_down.set("up_down", true));
     waveControlBub.add(colorBoubbles.set("colorBoubbles", ofColor(255,255), ofColor(0,0), ofColor(255,255)));
     
     ofParameterGroup waveControlLarve;
@@ -756,4 +834,14 @@ void ofApp::setupGui(){
     gui.loadFromFile("settings.xml");
     gui.minimizeAll();
 
+}
+
+//--------------------------------------------------------------
+void ofApp::keyReleased(int key){
+    for(int i = 0; i<10 ;i ++){
+        char c = ofToChar(ofToString(i));
+        if(key == c ){
+            masksFader[i] = 1;
+        }
+    }
 }

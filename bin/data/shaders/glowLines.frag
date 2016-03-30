@@ -95,9 +95,10 @@ mat2 rotate2d(float _angle){
 void main()
 {
     // ---------------- First, set up the camera rays for ray marching ----------------
+    
     vec2 uv = gl_FragCoord.yy/iResolution.yy * 2.0 - 1.0;// - 0.5;
     if(!horisontal){
-        uv = gl_FragCoord.xy/iResolution.xy * 2.0 - 1.0;// - 0.5;
+        uv = gl_FragCoord.xy/iResolution.xy * 10.0  - 1.5;
     }
     
     uv -= vec2(0.5);
@@ -111,7 +112,7 @@ void main()
     vec3 camLookat=vec3(0,0.0,0);	// vrp
     
     float mx=0.2*PI*2.0 + iGlobalTime * 0.0001;
-    float my=-0.2*10.0 + sin(iGlobalTime * 0.0003)*0.2+0.2;//*PI/2.01;
+    float my=-0.5*10.0 + sin(iGlobalTime * 0.0003)*0.2+0.2;//*PI/2.01;
     vec3 camPos=vec3(cos(my)*cos(mx),sin(my),cos(my)*sin(mx))*(200.2); 	// prp
     
     // Camera setup.
@@ -125,7 +126,7 @@ void main()
     // --------------------------------------------------------------------------------
     float t = 1.0;
     float inc = 0.02;
-    float maxDepth = u_amount*100.0;
+    float maxDepth = u_amount*300.0;
     float minDepth = 1.0;
     vec3 pos = vec3(0,0,0);
     float density = 0.0;
@@ -137,9 +138,9 @@ void main()
         
         pos = camPos + relVec * t;
         float temp = Density(pos);
-        //temp *= saturate(t-1.0);
+        temp *= saturate(t-1.0);
         
-        inc = 3. ;//+ temp*0.05;	// add temp because this makes it look extra crazy!
+        inc =  3.;//+temp;	// add temp because this makes it look extra crazy!
         density += temp * inc;
         t += inc;
     }
@@ -147,10 +148,8 @@ void main()
     // --------------------------------------------------------------------------------
     // Now that we have done our ray marching, let's put some color on this.
     vec3 finalColor = vec3(u_color*0.0001)* density*u_density;
-    float alpha = 1.;
-    if(density<.0){
-        alpha = 0.;
-    }
+    float alpha = (finalColor.x*finalColor.y*finalColor.z)/3.;
+
     
     // output the final color with sqrt for "gamma correction"
     gl_FragColor = vec4(sqrt(clamp(finalColor, 0.0, 1.0)),1.);

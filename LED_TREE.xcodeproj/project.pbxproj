@@ -107,6 +107,7 @@
 		21916AD71CA7E954007F085A /* rain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rain.h; sourceTree = "<group>"; };
 		21916ADA1CA8012B007F085A /* waveSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waveSystem.h; sourceTree = "<group>"; };
 		21916ADB1CA817B8007F085A /* sea.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sea.h; sourceTree = "<group>"; };
+		219D78B51CABE0280001A387 /* transPix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = transPix.h; sourceTree = "<group>"; };
 		21B9F4731CA04A6300543075 /* ofxSyphon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSyphon.h; sourceTree = "<group>"; };
 		21B9F4741CA04A6300543075 /* ofxSyphonClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSyphonClient.h; sourceTree = "<group>"; };
 		21B9F4751CA04A6300543075 /* ofxSyphonClient.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxSyphonClient.mm; sourceTree = "<group>"; };
@@ -244,6 +245,7 @@
 			children = (
 				21B9F4E31CA1DF7200543075 /* larve.h */,
 				21916ADB1CA817B8007F085A /* sea.h */,
+				219D78B51CABE0280001A387 /* transPix.h */,
 				21916AD71CA7E954007F085A /* rain.h */,
 				21916AD31CA6B814007F085A /* blink.h */,
 				21B9F4E71CA41A8B00543075 /* spiral.h */,

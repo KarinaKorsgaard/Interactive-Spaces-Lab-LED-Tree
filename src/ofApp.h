@@ -17,6 +17,7 @@
 #include "rain.h"
 #include "waveSystem.h"
 #include "sea.h"
+#include "transPix.h"
 
 class ofApp : public ofBaseApp{
     
@@ -25,17 +26,17 @@ public:
     void update();
     void draw();
     
-    void keyPressed(int key);
+//    void keyPressed(int key);
     void keyReleased(int key);
-    void mouseMoved(int x, int y );
-    void mouseDragged(int x, int y, int button);
-    void mousePressed(int x, int y, int button);
-    void mouseReleased(int x, int y, int button);
-    void mouseEntered(int x, int y);
-    void mouseExited(int x, int y);
-    void windowResized(int w, int h);
-    void dragEvent(ofDragInfo dragInfo);
-    void gotMessage(ofMessage msg);
+//    void mouseMoved(int x, int y );
+//    void mouseDragged(int x, int y, int button);
+//    void mousePressed(int x, int y, int button);
+//    void mouseReleased(int x, int y, int button);
+//    void mouseEntered(int x, int y);
+//    void mouseExited(int x, int y);
+//    void windowResized(int w, int h);
+//    void dragEvent(ofDragInfo dragInfo);
+//    void gotMessage(ofMessage msg);
 
     //
     void exit();
@@ -44,6 +45,9 @@ public:
     void setupGui();
     void setShaderVals();
     void setGraficVals();
+    
+    vector<TransPix>transPix;
+    bool transistionBegun;
     
     //shader stuff
     ofxAutoReloadedShader perlinShader;
@@ -60,7 +64,7 @@ public:
     
     //grafiks
     vector<Spiral> spirals;
-    vector<Rain>rainDrops;
+    vector<DataRain>rainDrops;
     vector<Blink> blinks;
     vector<Larve> larves;
     vector<Boubble> boubbles;
@@ -74,11 +78,14 @@ public:
     Sea seaSystem;
     float pWaveEdge = 0;
     int waveCounter = 0;
+    float drawnEdge = 0;
     
     ofFbo render;
     ofFbo meshFbo;
+    ofFbo lamps; 
     ofxSyphonServer syphon;
     ofxOscParameterSync syncOSC;
+
     
     //gui vars
     ofxPanel gui;
@@ -109,7 +116,7 @@ public:
     ofParameter<bool>  interActiveSea;
     ofParameter<float>  intensity;
     ofParameter<float>  disturbWave;
-    ofParameter<bool>  bwSwitch;
+    ofParameter<bool>  transition;
     ofParameter<ofColor>  grafiks;
     ofParameter<ofColor>  textures;
     ofParameter<float> inLeft;
@@ -123,26 +130,34 @@ public:
     ofParameter<ofColor>Fx1ColorTopBot;
     ofParameter<ofColor>Fx1ColorBotBot;
     
+    //grafiks params
+    //lines
     ofParameterGroup waveControl;
     ofParameter<float> dLinesSpeed;
     ofParameter<float> dLinesSync;
     ofParameter<ofColor> colorDLines;
+    
     //boubles
     ofParameter<float> boubblesIntensity;
+    ofParameter<int> bub_trace;
+    ofParameter<bool> up_down;
     ofParameter<float> boubblesVelMin;
     ofParameter<float> boubblesVelMax;
     ofParameter<ofColor> colorBoubbles;
     //blink
+    
     ofParameter<float> blinkTempo;
     ofParameter<float> blinkIntensity;
     ofParameter<bool> hard_soft;
     ofParameter<ofColor> colorBlink;
+    
     //spiral
     ofParameter<bool> spiralIntensity;
     ofParameter<float> spiralAngle;
     ofParameter<int> spiralAmount;
     ofParameter<ofColor> colorSpiral;
     //larve
+    
     ofParameter<float> larveIntensity;
     ofParameter<float> larveVelMin;
     ofParameter<float> larveVelMax;
@@ -150,6 +165,7 @@ public:
     ofParameter<float> larveMinLength;
     ofParameter<ofColor> colorLarve;
 
+    
     //shader GUI
     ofParameterGroup paramGeneral;
     ofParameterGroup paramFlames;

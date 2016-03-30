@@ -31,9 +31,10 @@ public:
     // Method to update location
     void update() {
         counter -=vel;
+        posY += vel;
         if(counter<0){
             counter=RES_W;
-            posY-=height;
+          //  posY-=height;
         }
         
     }
