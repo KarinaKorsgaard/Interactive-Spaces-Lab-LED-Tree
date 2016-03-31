@@ -156,7 +156,7 @@ void ofApp::update(){
         seaSystem.update(0,0,disturbWave);
     }
     
-    lampVis.update(tempoCloud/10, textures, intensity/100);
+    lampVis.update(tempoCloud/10, textures, intensityLamp/100);
     lamps.begin();
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -741,6 +741,7 @@ void ofApp::setupGui(){
     
     mainControl.add(transition.set("transition", false));
     mainControl.add(intensity.set("intensity", 0.5, 0., 1));
+    mainControl.add(intensityLamp.set("intensityLamp", 0.5, 0., 1));
     mainControl.add(edge.set("edge", 0.5, 0., 1));
     mainControl.add(disturbWave.set("disturbWave", 0.5, 0., 1));
     mainControl.add(syncColors.set("syncColors", false));

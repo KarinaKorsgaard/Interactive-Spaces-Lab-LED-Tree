@@ -118,6 +118,7 @@ public:
     ofParameter<bool>  interActiveWave;
     ofParameter<bool>  interActiveSea;
     ofParameter<float>  intensity;
+    ofParameter<float>  intensityLamp;
     ofParameter<float>  disturbWave;
     ofParameter<bool>  transition;
     ofParameter<ofColor>  grafiks;
