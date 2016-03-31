@@ -58,53 +58,49 @@ public:
     vector<Lamp>lamps;
     
     LampVis() {
-
+        shader.load("shaders/glow");
     }
     
     void setup(){
     
-        for(int i = 0 ; i<15;i++){
-            Lamp l;
-            l.posY = ofRandom(LAMP_H);
-            lamps.push_back(l);
-        }
+//        for(int i = 0 ; i<15;i++){
+//            Lamp l;
+//            l.posY = ofRandom(LAMP_H);
+//            lamps.push_back(l);
+//        }
     }
     
     // Method to update location
     void update(float _temp) {
-        counter+=0.2;
-        if(counter>LAMP_H)counter = ofRandom(LAMP_H);
-  
-        
-        for(int i = 0 ; i<lamps.size();i++){
-            lamps[i].update();
-        }
+        counter+=_temp;
+//        if(counter>LAMP_H)counter = ofRandom(LAMP_H);
+//  
+//        
+//        for(int i = 0 ; i<lamps.size();i++){
+//            lamps[i].update();
+//        }
     }
     // Method to display
     void draw() {
-        ofBackground(50);
-        for(int i = 0 ; i<lamps.size();i++){
-            lamps[i].draw();
-        }
-        ofSetLineWidth(2);
-        ofDrawLine(0,counter,LAMP_W,counter);
-        ofDrawLine(counter,0,counter,LAMP_H);
-//        counter+=tempo;
-//        shader.begin();
-//        shader.setUniform2f("u_resolution",LAMP_W, LAMP_H);
-//        shader.setUniform1f("u_time", counter);
-//        shader.setUniform1f("u_zoom", 0.5);
-//        shader.setUniform1f("u_balance", 0.5);
-//        shader.setUniform1f("u_contrast", 1+1.0);
-//        shader.setUniform1i("bwSwitch", false);
-//        shader.setUniform1i("bgTransparent", true);
-//        shader.setUniform1i("enableFBM", true);
-//        shader.setUniform1i("enableRMF", true);
-//        shader.setUniform3f("u_color", 1,1,1);
-//        ofSetColor(255,255,255);
-//        ofFill();
-//        ofDrawRectangle(0, 0, LAMP_W, LAMP_H);
-//        shader.end();
+//        ofBackground(50);
+//        for(int i = 0 ; i<lamps.size();i++){
+//            lamps[i].draw();
+//        }
+//        ofSetLineWidth(2);
+//        ofDrawLine(0,counter,LAMP_W,counter);
+//        ofDrawLine(counter,0,counter,LAMP_H);
+        
+        shader.begin();
+        shader.setUniform2f("iResolution",LAMP_W, LAMP_H);
+        shader.setUniform1f("iGlobalTime", counter);
+        shader.setUniform1f("u_density", 0.5);
+        shader.setUniform1f("u_amount", 0.5);
+        shader.setUniform1f("u_contrast", 1+1.0);
+        shader.setUniform3f("u_color", 1,1,1);
+        ofSetColor(255,255,255);
+        ofFill();
+        ofDrawRectangle(0, 0, LAMP_W, LAMP_H);
+        shader.end();
         
         
         
