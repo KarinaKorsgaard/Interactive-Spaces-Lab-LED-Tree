@@ -7,13 +7,6 @@ precision mediump float;
 
 uniform vec2 u_resolution;
 uniform float u_time;
-uniform float u_zoom;
-uniform float u_balance;
-uniform float u_contrast;
-uniform bool bwSwitch;
-uniform bool bgTransparent;
-uniform bool enableFBM;
-uniform bool enableRMF;
 uniform vec3 u_color;
 // All noise and fbm from iq
 
@@ -158,20 +151,19 @@ float cloud( vec3 p, float balance, bool fbm, bool rmf)
 
 void main( )
 {
-    vec2 uv = gl_FragCoord.yy / u_resolution.xy;
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
     uv.x*=(u_resolution.x/u_resolution.y);
-    uv*=u_zoom*10.0;
+    uv*=1.*10.0;
     float n = 0.0;
     
-    n = cloud(vec3(u_time, vec2(uv)), u_balance, true, true);
+    n = cloud(vec3(u_time, vec2(uv)), 1., true, true);
 
-    n = ((n - 0.5) * max(u_contrast , 0.0)) + 0.5;
+    n = ((n - 0.5) * max(2. , 0.0)) + 0.8;
 
     float a = 1.0;
-    if (bwSwitch) n = 1.0-n;
-    if (bgTransparent) a = n;
+    vec3 col = n*u_color;
 
-    gl_FragColor = vec4(vec3(n), a);
+    gl_FragColor = vec4(col, a);
     
 
 }

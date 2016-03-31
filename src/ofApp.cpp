@@ -156,7 +156,7 @@ void ofApp::update(){
         seaSystem.update(0,0,disturbWave);
     }
     
-    lampVis.update(tempoCloud/10);
+    lampVis.update(tempoCloud/10, textures, intensity/100);
     lamps.begin();
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

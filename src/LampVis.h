@@ -15,35 +15,63 @@
 class Lamp{
 public:
     float posY;
+    float vel;
     float width = 4;
     float tempo;
-    float alpha = 255;
     float counter;
-    
+    float offSetY;
+    bool show;
+    float a,b,c;
+    int pPosY;
+    bool up = false;
+    float intensity;
     Lamp() {
-        posY = 0;
-        tempo = 0.1;
+
     }
     
     // Method to update location
     void update() {
-        
-        counter+=tempo;
-        
-        posY += abs(sin(counter/10))*(tempo+0.5);
-    
-        if(posY > LAMP_H){
-            posY = 0;
-            width = ofRandom(1,10);
-            tempo = ofRandom(0.01,0.05);
+        if(posY<0){
+            show = false;
+            up = false;
+        }
+        if(show){
+            if(posY>LAMP_H/numLamps)up = true;
+            
+            if(!up)posY+=0.5;
+            if(up)posY-=0.5;
+            //if(vel >0.01)vel*=0.95;
         }
     }
     // Method to display
     
     void draw() {
-        ofSetColor(255);
-        
-        ofDrawRectangle(0,posY,LAMP_W,width);
+        if(show){
+            ofSetLineWidth(2);
+            
+            
+//            if(int(posY)<posY){
+//                a += vel * 255;
+//            }
+//            if(int(posY)!=pPosY){
+//                pPosY = posY;
+//                a = 0;
+//            }
+
+            //            ofSetColor(255,a);
+//            ofDrawLine(0,int(posY)+offSetY+1,LAMP_W,int(posY)+offSetY+1);
+//            ofSetColor(255,(255-a));
+//            ofDrawLine(0,int(posY)+offSetY-1,LAMP_W,int(posY)+offSetY-1);
+            ofSetColor(255);
+            ofDrawLine(0,int(posY)+offSetY,LAMP_W,int(posY)+offSetY);
+            
+//            float alpha = 255;
+//            for(int i = 0; i < 3 ; i++){
+//                ofSetColor(255,alpha);
+//                ofDrawLine(0,int(posY)+offSetY-i,LAMP_W,int(posY)+offSetY-i);
+//                alpha -= 255/3;
+//            }
+        }
     }
     
 };
@@ -56,51 +84,57 @@ public:
     float counter;
     ofxAutoReloadedShader shader;
     vector<Lamp>lamps;
+    ofColor color;
     
     LampVis() {
-        shader.load("shaders/glow");
+        shader.load("shaders/cloudH");
     }
     
     void setup(){
     
-//        for(int i = 0 ; i<15;i++){
-//            Lamp l;
-//            l.posY = ofRandom(LAMP_H);
-//            lamps.push_back(l);
-//        }
+        for(int i = 0 ; i<numLamps;i++){
+            Lamp l;
+            l.posY = 0;
+            l.offSetY = i*LAMP_H/numLamps;
+            lamps.push_back(l);
+        }
     }
     
     // Method to update location
-    void update(float _temp) {
+    void update(float _temp, ofColor col, float intens) {
+        color = col;
         counter+=_temp;
-//        if(counter>LAMP_H)counter = ofRandom(LAMP_H);
-//  
-//        
-//        for(int i = 0 ; i<lamps.size();i++){
-//            lamps[i].update();
-//        }
+////        if(counter>LAMP_H)counter = ofRandom(LAMP_H);
+////  
+////        
+        for(int i = 0 ; i<lamps.size();i++){
+            if(ofRandom(1)<intens && !lamps[i].show){
+                lamps[i].show = true;
+                lamps[i].posY = 0;
+            }
+            lamps[i].update();
+        }
     }
     // Method to display
     void draw() {
-//        ofBackground(50);
-//        for(int i = 0 ; i<lamps.size();i++){
-//            lamps[i].draw();
-//        }
-//        ofSetLineWidth(2);
-//        ofDrawLine(0,counter,LAMP_W,counter);
-//        ofDrawLine(counter,0,counter,LAMP_H);
         
         shader.begin();
-        shader.setUniform2f("iResolution",LAMP_W, LAMP_H);
-        shader.setUniform1f("iGlobalTime", counter);
-        shader.setUniform1f("u_density", 0.5);
-        shader.setUniform1f("u_amount", 0.5);
-        shader.setUniform1f("u_contrast", 1+1.0);
-        shader.setUniform3f("u_color", 1,1,1);
+        shader.setUniform2f("u_resolution",LAMP_W, LAMP_H);
+        shader.setUniform1f("u_time", counter);
+        shader.setUniform3f("u_color", float(color.r)/255,float(color.g)/255,float(color.b)/255);
         ofSetColor(255,255,255);
         ofFill();
         ofDrawRectangle(0, 0, LAMP_W, LAMP_H);
         shader.end();
+        
+        for(int i = 0 ; i<lamps.size();i++){
+            lamps[i].draw();
+        }
+//        ofSetLineWidth(2);
+//        ofDrawLine(0,counter,LAMP_W,counter);
+//        ofDrawLine(counter,0,counter,LAMP_H);
+        
+
         
         
         

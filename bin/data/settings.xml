@@ -28,11 +28,11 @@
 		<edge>0.709911</edge>
 		<waveEdge>0.1</waveEdge>
 		<syncColors>1</syncColors>
-		<grafiks>255, 255, 255, 255</grafiks>
+		<grafiks>99, 65, 50, 255</grafiks>
 		<textures>157, 103, 157, 255</textures>
 	<interActiveWave>0</interActiveWave>
 		<interActiveSea>0</interActiveSea>
-	<intensity>1</intensity>
+	<intensity>0.30102</intensity>
 	<perlin>0</perlin>
 	<gradientColor>0</gradientColor>
 		<disturbWave>0.581633</disturbWave>
@@ -45,19 +45,19 @@
 			<blinkIntensity>0.3512</blinkIntensity>
 			<blinkTempo>0.00742295</blinkTempo>
 			<hard_soft>1</hard_soft>
-			<colorBlink>255, 255, 255, 255</colorBlink>
+			<colorBlink>99, 65, 50, 255</colorBlink>
 		</waveControlBlink>
 		<waveControlSpiral>
 			<spiralIntensity>0</spiralIntensity>
 			<spiralAngle>15.4227</spiralAngle>
 			<spiralAmount>2</spiralAmount>
-			<colorSpiral>255, 255, 255, 255</colorSpiral>
+			<colorSpiral>99, 65, 50, 255</colorSpiral>
 		</waveControlSpiral>
 		<waveControlBub>
 			<boubblesIntensity>1</boubblesIntensity>
 			<boubblesVelMin>0.210329</boubblesVelMin>
 			<boubblesVelMax>0.418576</boubblesVelMax>
-			<colorBoubbles>255, 255, 255, 255</colorBoubbles>
+			<colorBoubbles>99, 65, 50, 255</colorBoubbles>
 		<bub_trace>1</bub_trace>
 			<up_down>0</up_down>
 		</waveControlBub>
@@ -67,12 +67,12 @@
 			<larveVelMax>0.612245</larveVelMax>
 			<larveMinLength>8.3611</larveMinLength>
 			<larveMaxLength>15.6393</larveMaxLength>
-			<colorLarve>255, 255, 255, 255</colorLarve>
+			<colorLarve>99, 65, 50, 255</colorLarve>
 		</waveControlLarve>
 		<waveControlLines>
 			<dLinesSpeed>0.2</dLinesSpeed>
 			<dLinesSync>0.9</dLinesSync>
-			<colorDLines>255, 255, 255, 255</colorDLines>
+			<colorDLines>99, 65, 50, 255</colorDLines>
 		</waveControlLines>
 	<waveControlWave>
 			<inLeft>-0.20783</inLeft>
