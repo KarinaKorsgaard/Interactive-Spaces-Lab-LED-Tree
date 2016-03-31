@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(60);
+    ofEnableSmoothing();
+    ofSetVerticalSync(true);
     
     setupGui();
     syncOSC.setup((ofParameterGroup&)gui.getParameter(),OSCRECEIVEPORT,"localhost",OSCSENDPORT);
@@ -25,6 +27,7 @@ void ofApp::setup(){
     }
     
     lampVis = *new LampVis;
+    lampVis.setup();
 
     //shaders
     cloudShader.load("shaders/cloud");
@@ -154,13 +157,13 @@ void ofApp::update(){
     }
     
     lampVis.update(tempoCloud/10);
-    
     lamps.begin();
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ofBackground(0);
     lampVis.draw();
     lamps.end();
+    
     
     //mainRender
     render.begin();

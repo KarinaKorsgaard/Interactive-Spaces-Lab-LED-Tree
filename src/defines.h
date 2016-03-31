@@ -11,7 +11,7 @@
 #define RES_H 800
 
 #define LAMP_W 20
-#define LAMP_H 263
+#define LAMP_H 264
 #define numLamps 12
 // OSC
 #define OSCRECEIVEPORT 7000
