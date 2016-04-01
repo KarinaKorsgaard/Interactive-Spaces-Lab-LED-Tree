@@ -158,7 +158,7 @@ void main( )
     
     n = cloud(vec3(u_time, vec2(uv)), 1., true, true);
 
-    n = ((n - 0.5) * max(2. , 0.0)) + 0.8;
+    n = ((n - 0.5) * max(3. , 0.0)) + 0.8;
 
     float a = 1.0;
     vec3 col = n*u_color;

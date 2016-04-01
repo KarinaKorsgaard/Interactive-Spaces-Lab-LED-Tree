@@ -63,7 +63,7 @@ public:
             for(int i = 0; i<10;i++){
                 ofSetColor(ofColor(color.r,color.g,color.b,alpha));
                 alpha-=inc;
-                ofDrawRectangle(pos.x,pos.y-i, RES_W/numTreePoles,1);
+                ofDrawRectangle(pos.x,pos.y-i, RES_W/(numTreePoles),1);
             }
         }
         if(updatePoint){

@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/LampVis.h"
-            timestampString = "481135095.035547"
+            timestampString = "481201178.174801"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "update(float _temp, ofColor col, float intens)"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "update(float _temp,float zoom,float balance,float contrast,bool fbm,bool rmf, ofColor col, float intens)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

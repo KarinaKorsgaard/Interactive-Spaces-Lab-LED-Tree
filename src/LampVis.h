@@ -85,6 +85,7 @@ public:
     ofxAutoReloadedShader shader;
     vector<Lamp>lamps;
     ofColor color;
+    float a,b,c,d,e;
     
     LampVis() {
         shader.load("shaders/cloudH");
@@ -101,8 +102,14 @@ public:
     }
     
     // Method to update location
-    void update(float _temp, ofColor col, float intens) {
+    void update(float _temp,float zoom,float balance,float contrast,bool fbm,bool rmf, ofColor col, float intens) {
+        a= zoom;
+        b= balance;
+        c= contrast;
+        d= fbm;
+        e= rmf;
         color = col;
+        ;
         counter+=_temp;
 ////        if(counter>LAMP_H)counter = ofRandom(LAMP_H);
 ////  
@@ -121,6 +128,14 @@ public:
         shader.begin();
         shader.setUniform2f("u_resolution",LAMP_W, LAMP_H);
         shader.setUniform1f("u_time", counter);
+        
+        shader.setUniform1f("u_zoom", a);
+        shader.setUniform1f("u_balance", b);
+        shader.setUniform1f("u_contrast", c+1.0);
+        shader.setUniform1i("enableFBM", d);
+        shader.setUniform1i("enableRMF", e);
+        shader.setUniform1i("enableCircle", false);
+
         shader.setUniform3f("u_color", float(color.r)/255,float(color.g)/255,float(color.b)/255);
         ofSetColor(255,255,255);
         ofFill();

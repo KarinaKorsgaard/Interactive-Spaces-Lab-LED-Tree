@@ -101,9 +101,7 @@ void ofApp::update(){
     //update warped image (glow shader)
     setShaderVals();
     
-    
-    //lamp render
-    lampVis.update(tempoCloud/10, textures, intensityLamp/100);
+    lampVis.update(tempoCloud/10,zoomCloud,balance,contrast,enableFBM,enableRMF, cloudColor, intensityLamp/100);
     
     lamps.begin();
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -271,7 +269,7 @@ void ofApp::setGraficVals(){
         it->update(1-edge);
         if(it->isDead()){
             it = rainDrops.erase(it);
-            edge+=(float(1-edge)/800);
+            edge+=(float(1-edge)/EDGEGAIN);
         }
         else{
             ++it;
@@ -362,7 +360,6 @@ void ofApp::setupGui(){
     waveControlBlink.add(colorBlink.set("colorBlink", ofColor(255,255), ofColor(0,0), ofColor(255,255)));
     
     waveControl.add(waveControlBlink);
-    
     //textures
     paramGeneral.setName("paramGeneral");
     paramGlow.setName("paramGlow");
@@ -372,7 +369,20 @@ void ofApp::setupGui(){
     paramGlow.add(glowHorisontal.set("glowHorisontal",false));
     paramGlow.add(glowColor.set("glowColor", ofColor(0,154,255,255), ofColor(0,0),ofColor(255)));
     
+    // param for Cloud
+    paramCloud.setName("paramCloud");
+    paramCloud.add(tempoCloud.set("tempoCloud", 0.1, 0., 1));
+    paramCloud.add(zoomCloud.set("zoomCloud", 0.1, 0., 1));
+    paramCloud.add(balance.set("balance",0.5,0.,1.));
+    paramCloud.add(contrast.set("contrast",0.,-1,1.));
+    paramCloud.add(enableFBM.set("enableFBM", true));
+    paramCloud.add(enableRMF.set("enableRMF", true));
+    paramCloud.add(enableCircle.set("border", true));
+    paramCloud.add(cloudColor.set("cloudColor", ofColor(0,154,255,255), ofColor(0,0),ofColor(255)));
+
+    
     paramGeneral.add(paramGlow);
+    paramGeneral.add(paramCloud);
     
     guiGroup.add(enable);
     guiGroup.add(mainControl);

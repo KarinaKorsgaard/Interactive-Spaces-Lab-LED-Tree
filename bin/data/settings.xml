@@ -29,7 +29,7 @@
 		<waveEdge>0.1</waveEdge>
 		<syncColors>1</syncColors>
 		<grafiks>255, 255, 255, 255</grafiks>
-		<textures>153, 103, 159, 255</textures>
+		<textures>255, 103, 159, 255</textures>
 	<interActiveWave>0</interActiveWave>
 		<interActiveSea>0</interActiveSea>
 	<intensity>0.30102</intensity>
@@ -101,14 +101,15 @@
 			<contrast>1</contrast>
 			<enableFBM>1</enableFBM>
 			<enableRMF>1</enableRMF>
-			<cloudColor>153, 103, 159, 255</cloudColor>
+			<cloudColor>255, 103, 159, 255</cloudColor>
+		<border>1</border>
 		</paramCloud>
 		<paramGlow>
 			<tempoGlow>0.849021</tempoGlow>
 			<glowDensity>0.682575</glowDensity>
 			<u_amount>0.338904</u_amount>
 			<glowHorisontal>0</glowHorisontal>
-			<glowColor>153, 103, 159, 255</glowColor>
+			<glowColor>255, 103, 159, 255</glowColor>
 		</paramGlow>
 		<paramDrops>
 			<tempoDrops>0.1</tempoDrops>

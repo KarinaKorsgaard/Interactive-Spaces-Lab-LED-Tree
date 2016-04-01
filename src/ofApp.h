@@ -108,6 +108,12 @@ public:
     
     ofParameterGroup paramCloud;
     ofParameter<float> tempoCloud;
+    ofParameter<float> zoomCloud;
+    ofParameter<float> balance;
+    ofParameter<float> contrast;
+    ofParameter<bool>  enableFBM;
+    ofParameter<bool>  enableRMF;
+    ofParameter<bool>  enableCircle;
     ofParameter<ofColor> cloudColor;
     
     ofParameterGroup paramGlow;
@@ -116,4 +122,6 @@ public:
     ofParameter<float> u_amount;
     ofParameter<bool> glowHorisontal;
     ofParameter<ofColor> glowColor;
+    
+    
 };

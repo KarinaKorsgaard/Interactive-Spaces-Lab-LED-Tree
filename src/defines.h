@@ -18,5 +18,5 @@
 #define OSCSENDPORT 7001
 #define OSCHOSTIP   "127.0.0.1"
 
-#define DAMPING 0.95
-#define ATTACK  0.05
+
+#define EDGEGAIN 800 //higher number ->slower gain.
