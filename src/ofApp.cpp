@@ -232,7 +232,7 @@ void ofApp::setShaderVals(){
     
     ofBackground(0);
     if(gradientColor){
-        ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR)
+        ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR);
     }
     
     if(glow){
