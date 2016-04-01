@@ -103,10 +103,8 @@
 		17E65988300FBD9AAA2CD0CA /* ofxGui.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxGui.h; path = ../../../addons/ofxGui/src/ofxGui.h; sourceTree = SOURCE_ROOT; };
 		1C0DA2561397A7DE0246858B /* ofxGuiGroup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxGuiGroup.h; path = ../../../addons/ofxGui/src/ofxGuiGroup.h; sourceTree = SOURCE_ROOT; };
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
+		2135A9B51CAE82440095734C /* rain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rain.h; sourceTree = "<group>"; };
 		21916AD31CA6B814007F085A /* blink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = blink.h; sourceTree = "<group>"; };
-		21916AD71CA7E954007F085A /* rain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rain.h; sourceTree = "<group>"; };
-		21916ADA1CA8012B007F085A /* waveSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = waveSystem.h; sourceTree = "<group>"; };
-		21916ADB1CA817B8007F085A /* sea.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sea.h; sourceTree = "<group>"; };
 		219D78B51CABE0280001A387 /* transPix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = transPix.h; sourceTree = "<group>"; };
 		219D78B61CAC78D10001A387 /* LampVis.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LampVis.h; sourceTree = "<group>"; };
 		21B9F4731CA04A6300543075 /* ofxSyphon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSyphon.h; sourceTree = "<group>"; };
@@ -171,10 +169,6 @@
 		21B9F4C11CA09F8F00543075 /* VerticalTiltShifPass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VerticalTiltShifPass.h; sourceTree = "<group>"; };
 		21B9F4C21CA09F8F00543075 /* ZoomBlurPass.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ZoomBlurPass.cpp; sourceTree = "<group>"; };
 		21B9F4C31CA09F8F00543075 /* ZoomBlurPass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZoomBlurPass.h; sourceTree = "<group>"; };
-		21B9F4DF1CA14E9300543075 /* boubble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boubble.h; sourceTree = "<group>"; };
-		21B9F4E01CA14E9300543075 /* dancingLine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dancingLine.h; sourceTree = "<group>"; };
-		21B9F4E31CA1DF7200543075 /* larve.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = larve.h; sourceTree = "<group>"; };
-		21B9F4E71CA41A8B00543075 /* spiral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spiral.h; sourceTree = "<group>"; };
 		23640F57DF6C4BB6BFC5DA4C /* PacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/PacketListener.h; sourceTree = SOURCE_ROOT; };
 		2834D88A62CD23F3DE2C47D1 /* ofxButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxButton.h; path = ../../../addons/ofxGui/src/ofxButton.h; sourceTree = SOURCE_ROOT; };
 		2FD4B0329909D3527F003494 /* UdpSocket.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = UdpSocket.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/UdpSocket.h; sourceTree = SOURCE_ROOT; };
@@ -244,16 +238,10 @@
 		21916AD61CA6D98F007F085A /* classes */ = {
 			isa = PBXGroup;
 			children = (
-				21B9F4E31CA1DF7200543075 /* larve.h */,
-				21916ADB1CA817B8007F085A /* sea.h */,
 				219D78B51CABE0280001A387 /* transPix.h */,
-				21916AD71CA7E954007F085A /* rain.h */,
 				219D78B61CAC78D10001A387 /* LampVis.h */,
+				2135A9B51CAE82440095734C /* rain.h */,
 				21916AD31CA6B814007F085A /* blink.h */,
-				21B9F4E71CA41A8B00543075 /* spiral.h */,
-				21B9F4DF1CA14E9300543075 /* boubble.h */,
-				21916ADA1CA8012B007F085A /* waveSystem.h */,
-				21B9F4E01CA14E9300543075 /* dancingLine.h */,
 			);
 			name = classes;
 			sourceTree = "<group>";
