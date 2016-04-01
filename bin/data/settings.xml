@@ -29,7 +29,7 @@
 		<waveEdge>0.1</waveEdge>
 		<syncColors>1</syncColors>
 		<grafiks>255, 255, 255, 255</grafiks>
-		<textures>255, 103, 159, 255</textures>
+		<textures>211, 103, 159, 255</textures>
 	<interActiveWave>0</interActiveWave>
 		<interActiveSea>0</interActiveSea>
 	<intensity>0.30102</intensity>
@@ -38,7 +38,7 @@
 		<disturbWave>0.581633</disturbWave>
 	<transition>0</transition>
 	<intensityLamp>0</intensityLamp>
-	<preview>0</preview>
+	<preview>1</preview>
 	</mainControl>
 	<BubblesLines>
 		<waveDivisions>2</waveDivisions>
@@ -96,12 +96,12 @@
 		</paramFlames>
 		<paramCloud>
 			<tempoCloud>0.0212412</tempoCloud>
-			<zoomCloud>0.44294</zoomCloud>
-			<balance>0.312786</balance>
+			<zoomCloud>0.208663</zoomCloud>
+			<balance>0.198251</balance>
 			<contrast>1</contrast>
 			<enableFBM>1</enableFBM>
 			<enableRMF>1</enableRMF>
-			<cloudColor>255, 103, 159, 255</cloudColor>
+			<cloudColor>211, 103, 159, 255</cloudColor>
 		<border>1</border>
 		</paramCloud>
 		<paramGlow>
@@ -109,7 +109,7 @@
 			<glowDensity>0.682575</glowDensity>
 			<u_amount>0.338904</u_amount>
 			<glowHorisontal>0</glowHorisontal>
-			<glowColor>255, 103, 159, 255</glowColor>
+			<glowColor>211, 103, 159, 255</glowColor>
 		</paramGlow>
 		<paramDrops>
 			<tempoDrops>0.1</tempoDrops>

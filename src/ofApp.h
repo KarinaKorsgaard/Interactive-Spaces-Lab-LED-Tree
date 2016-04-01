@@ -93,9 +93,7 @@ public:
     //background gradient colors
     ofParameterGroup backgroud_Grad;
     ofParameter<ofColor>Fx1ColorTopTop;
-    ofParameter<ofColor>Fx1ColorBotTop;
     ofParameter<ofColor>Fx1ColorTopBot;
-    ofParameter<ofColor>Fx1ColorBotBot;
 
     //blink
     ofParameter<float> blinkTempo;
@@ -113,7 +111,6 @@ public:
     ofParameter<float> contrast;
     ofParameter<bool>  enableFBM;
     ofParameter<bool>  enableRMF;
-    ofParameter<bool>  enableCircle;
     ofParameter<ofColor> cloudColor;
     
     ofParameterGroup paramGlow;

@@ -10,8 +10,6 @@ void ofApp::setup(){
     syncOSC.setup((ofParameterGroup&)gui.getParameter(),OSCRECEIVEPORT,"localhost",OSCSENDPORT);
     syncOSC.update();
     
-    
-    
     lampVis = *new LampVis;
     lampVis.setup();
     
@@ -154,6 +152,9 @@ void ofApp::update(){
     }
     
     if(transistionBegun && transPix.size()>0){
+        if(gradientColor){
+            ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR);
+        }
         transPix[0].draw();
     }
     render.end();
@@ -231,8 +232,7 @@ void ofApp::setShaderVals(){
     
     ofBackground(0);
     if(gradientColor){
-        ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR);
-        ofRectGradient(0, RES_H/2, RES_W, RES_H/2, Fx1ColorBotTop, Fx1ColorBotBot, OF_GRADIENT_LINEAR);
+        ofRectGradient(0, 0, RES_W, RES_H/2, Fx1ColorTopTop, Fx1ColorTopBot, OF_GRADIENT_LINEAR)
     }
     
     if(glow){
@@ -281,7 +281,7 @@ void ofApp::setGraficVals(){
         if(ofRandom(100000)/100000 < blinkIntensity){
             Blink blink;
             blink.blinkColor = colorBlink;
-            int resH = ofRandom(RES_H*(1-edge));
+            int resH = ofRandom(RES_H);
             blink.location = ofVec2f(((int)ofRandom(RES_W)),(int)ofRandom(resH));
             blink.tempo = blinkTempo;
             blink.hard_soft = hard_soft;
@@ -330,12 +330,9 @@ void ofApp::setupGui(){
         enable.add(masksFader[i]);
     }
     
-    
     backgroud_Grad.setName("backgroud_Grad");
     backgroud_Grad.add(Fx1ColorTopTop.set("Backgroud_TopTop", ofColor(0,0), ofColor(0,0),ofColor(255)));
     backgroud_Grad.add(Fx1ColorTopBot.set("Backgroud_TopBot", ofColor(0,0), ofColor(0,0),ofColor(255)));
-    backgroud_Grad.add(Fx1ColorBotTop.set("Backgroud_BotTop", ofColor(0,0), ofColor(0,0),ofColor(255)));
-    backgroud_Grad.add(Fx1ColorBotBot.set("Backgroud_BotBot", ofColor(0,0), ofColor(0,0),ofColor(255)));
     
     mainControl.setName("mainControl");
     mainControl.add(pixelPreview.set("preview", false));
@@ -377,10 +374,8 @@ void ofApp::setupGui(){
     paramCloud.add(contrast.set("contrast",0.,-1,1.));
     paramCloud.add(enableFBM.set("enableFBM", true));
     paramCloud.add(enableRMF.set("enableRMF", true));
-    paramCloud.add(enableCircle.set("border", true));
     paramCloud.add(cloudColor.set("cloudColor", ofColor(0,154,255,255), ofColor(0,0),ofColor(255)));
 
-    
     paramGeneral.add(paramGlow);
     paramGeneral.add(paramCloud);
     
